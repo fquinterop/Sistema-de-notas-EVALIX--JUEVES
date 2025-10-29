@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario </title>
+  <!-- /* Estilos */ -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="/assets/css/styleReg.css">
+
+</head>
+
+<body>
+
+
+  <div class="container">
+
+    <div class="form-content">
+      <h1 id="title">Registro</h1>
+
+      <form>
+
+        <div class="input-group">
+
+
+          <form id="formRegistro" action="#" method="post">
+            <div class="input-field" id="perfilInput">
+              <i class="fa fa-users" aria-hidden="true"></i>
+              <input list="perfiles" placeholder="Perfil Usuario" required>
+              <datalist id="perfiles">
+                <option value="Administrativo">
+                <option value="Docente">
+                <option value="Estudiante">
+              </datalist>
+            </div>
+
+            <div class="input-field" id="nameInput">
+              <i class="fa-solid fa-user"></i>
+              <input type="text" placeholder="Nombre Completo" required>
+            </div>
+
+            <div class="input-field" id="emailInput">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" placeholder="Correo Institucional" required>
+            </div>
+
+            <div class="input-field" id="passwordInput">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" placeholder="Contraseña" required>
+            </div>
+
+            <div class="input-field" id="ConfpasswordInput">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" placeholder="Confirmar Contraseña" required>
+            </div>
+
+            <p>¿Dale click<span style="font-size:1.2em;">👇</span></p>
+
+            <div class="btn-field">
+              <!-- IMPORTANTE: type="submit" para que valide los campos -->
+              <button id="btnRegistrar" type="submit">Crear Cuenta</button>
+            </div>
+          </form>
+
+
+
+      </form>
+    </div>
+  </div>
+
+
+  <script src="registro.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --azul-oscuro: #0d47a1;
+  }
+
+  /* Fondo mosaico tipo marca de agua */
+  body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: url("assets/imagenes/evalix.png");
+    background-repeat: repeat;
+    background-position: center;
+    background-size: 220px;
+    opacity: 0.18;
+    pointer-events: none;
+    animation: sutilMovimiento 70s linear infinite;
+  }
+
+  @keyframes sutilMovimiento {
+    0% {
+      background-position: 0 0;
+    }
+
+    50% {
+      background-position: 300px 200px;
+    }
+
+    100% {
+      background-position: 0 0;
+    }
+  }
+
+  /* Responsive */
+  @media (max-width: 520px) {
+    .card-login {
+      width: 94vw;
+      padding: 14px;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+    }
+
+    footer {
+      font-size: 0.78rem;
+      padding: 6px 10px;
+    }
+  }
+</style>
+<!-- --------------------------------------------------------------------- -->

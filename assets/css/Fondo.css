@@ -1,0 +1,33 @@
+
+* { box-sizing: border-box; }
+
+:root {
+  --azul-oscuro: #0d47a1;
+}
+
+/* Fondo mosaico tipo marca de agua */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url("assets/imagenes/evalix.png");
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 220px;
+  opacity: 0.18;
+  pointer-events: none;
+  animation: sutilMovimiento 20s linear infinite;
+}
+@keyframes sutilMovimiento {
+  0% { background-position: 0 0; }
+  50% { background-position: 300px 200px; }
+  100% { background-position: 0 0; }
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+  .card-login { width: 94vw; padding: 14px; }
+  h2 { font-size: 1.3rem; }
+  footer { font-size: 0.78rem; padding: 6px 10px; }
+}
