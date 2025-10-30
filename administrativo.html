@@ -7,7 +7,92 @@
   <title>Panel Administrativo Evalix</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-  <style>
+</head>
+<body class="bg-light">
+
+  <nav class="navbar navbar-dark" style="background-color: #2196f3; position: relative; height: 80px;">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center position-relative" href="index.html" style="z-index:2;">
+        <img src="assets/imagenes/evalix.png" alt="Evalix"
+          style="width:75px; height:75px; object-fit: contain; margin-top:-5px;" />
+      </a>
+      <span class="fw-bold text-white position-absolute top-50 start-50 translate-middle">
+        <strong>PANEL ADMINISTRATIVO</strong>
+      </span>
+      <div class="text-end ms-auto">
+        <span id="userEmail" class="text-white-50 me-3"></span>
+        <button class="btn btn-outline-light btn-sm" id="logoutBtn"><strong>Cerrar sesión</strong></button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <div class="d-flex flex-wrap gap-3 align-items-end mb-3">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="autoIdSwitch" checked>
+        <label class="form-check-label" for="autoIdSwitch"><strong>Autogenerar ID</strong></label>
+      </div>
+
+      <div class="ms-auto d-flex gap-2">
+        <button class="btn btn-primary" id="addRowBtn">Agregar estudiante</button>
+        <button class="btn btn-success" id="saveBtn">Guardar cambios</button>
+        <button class="btn btn-secondary" id="exportBtn">Exportar CSV</button>
+        <button class="btn btn-outline-danger" id="clearBtn">Limpiar todo</button>
+      </div>
+    </div>
+
+    <div class="alert alert-warning d-none" id="netStatus"></div>
+
+    <div class="table-responsive">
+      <table class="table table-striped align-middle" id="studentsTable">
+        <thead class="table-header-claro">
+          <tr>
+            <th>ID Estudiante</th>
+            <th style="min-width:140px;">Documento</th>
+            <th style="min-width:180px;">Nombre Completo</th>
+            <th style="min-width:140px;">Asignatura</th>
+            <th style="min-width:100px;">Año Lectivo</th>
+            <th style="min-width:100px;">Período</th>
+            <th style="min-width:80px;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="studentsTbody"></tbody>
+      </table>
+    </div>
+  </main>
+
+
+  <script src="administrativo.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
     .table-header-claro th {
       background-color: #B0BEC5 !important;
       color: #212121 !important;
@@ -108,366 +193,4 @@
       }
     }
   </style>
-</head>
 
-<body class="bg-light">
-
-  <nav class="navbar navbar-dark" style="background-color: #2196f3; position: relative; height: 80px;">
-    <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center position-relative" href="index.html" style="z-index:2;">
-        <img src="assets/imagenes/evalix.png" alt="Evalix"
-          style="width:75px; height:75px; object-fit: contain; margin-top:-5px;" />
-      </a>
-      <span class="fw-bold text-white position-absolute top-50 start-50 translate-middle">
-        <strong>PANEL ADMINISTRATIVO</strong>
-      </span>
-      <div class="text-end ms-auto">
-        <span id="userEmail" class="text-white-50 me-3"></span>
-        <button class="btn btn-outline-light btn-sm" id="logoutBtn"><strong>Cerrar sesión</strong></button>
-      </div>
-    </div>
-  </nav>
-
-  <main class="container py-4">
-    <div class="d-flex flex-wrap gap-3 align-items-end mb-3">
-      <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" id="autoIdSwitch" checked>
-        <label class="form-check-label" for="autoIdSwitch"><strong>Autogenerar ID</strong></label>
-      </div>
-
-      <div class="ms-auto d-flex gap-2">
-        <button class="btn btn-primary" id="addRowBtn">Agregar estudiante</button>
-        <button class="btn btn-success" id="saveBtn">Guardar cambios</button>
-        <button class="btn btn-secondary" id="exportBtn">Exportar CSV</button>
-        <button class="btn btn-outline-danger" id="clearBtn">Limpiar todo</button>
-      </div>
-    </div>
-
-    <div class="alert alert-warning d-none" id="netStatus"></div>
-
-    <div class="table-responsive">
-      <table class="table table-striped align-middle" id="studentsTable">
-        <thead class="table-header-claro">
-          <tr>
-            <th>ID Estudiante</th>
-            <th style="min-width:140px;">Documento</th>
-            <th style="min-width:180px;">Nombre Completo</th>
-            <th style="min-width:140px;">Asignatura</th>
-            <th style="min-width:100px;">Año Lectivo</th>
-            <th style="min-width:100px;">Período</th>
-            <th style="min-width:80px;">Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="studentsTbody"></tbody>
-      </table>
-    </div>
-  </main>
-
-  <script>
-    // =========================
-    //  CONFIG / API ENDPOINTS
-    // =========================
-    const API_BASE = 'https://68fe81337c700772bb13ddbe.mockapi.io'
-    const ROUTES = {
-      list: () => `${API_BASE}/Admin`,
-      save: () => `${API_BASE}/Admin`
-    };
-
-
-    // ---- Catálogo ----
-    const MATERIAS = ['Matemáticas', 'Español', 'Ciencias', 'Inglés', 'Educación Física', 'Artes'];
-    const PERIODOS = [1, 2, 3, 4];
-
-    // ---- Estado ----
-    const STORAGE_KEY = 'evalix_students';
-    let state = { nextId: 1001, autoId: true, rows: [] };
-
-    // ---- DOM ----
-    const tbody = document.getElementById('studentsTbody');
-    const autoIdSwitch = document.getElementById('autoIdSwitch');
-    const userEmailSpan = document.getElementById('userEmail');
-    const netStatus = document.getElementById('netStatus');
-
-    // =========================
-    //  SESIÓN
-    // =========================
-    (function checkSession() {
-      const u = localStorage.getItem('evalix_user');
-      if (!u) { window.location.href = 'index.html'; return; }
-      const user = JSON.parse(u);
-      userEmailSpan.textContent = user.email || '';
-      if (user.tipo !== 'administrativo') {
-        alert('Acceso denegado. Solo usuarios administrativos pueden acceder.');
-        window.location.href = 'index.html';
-      }
-    })();
-
-    // =========================
-    //  API HELPERS
-    // =========================
-    function getAuthHeaders() {
-      try {
-        const u = JSON.parse(localStorage.getItem('evalix_user') || '{}');
-        if (u && u.token) return { Authorization: `Bearer ${u.token}` };
-      } catch { }
-      return {};
-    }
-
-    async function apiGetStudents() {
-      if (!API_BASE) {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { nextId: 1001, autoId: true, rows: [] };
-        try {
-          return JSON.parse(raw);
-        } catch (e) {
-          console.warn('Error parseando localStorage:', e);
-          return { nextId: 1001, autoId: true, rows: [] };
-        }
-      }
-
-      const url = ROUTES.list();
-      const res = await fetch(url, {
-        headers: { 'Accept': 'application/json', ...getAuthHeaders() },
-        credentials: 'include'
-      });
-      if (res.status === 401) { window.location.href = 'index.html'; return; }
-      if (!res.ok) throw new Error(`GET ${url} → ${res.status}`);
-      return res.json();
-    }
-
-    async function apiSaveStudents(payload) {
-      if (!API_BASE) {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-          return { ok: true, localOnly: true };
-        } catch (e) {
-          console.error('Error guardando en localStorage:', e);
-          throw e;
-        }
-      }
-
-      const url = ROUTES.save();
-      const res = await fetch(url, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', ...getAuthHeaders() },
-        credentials: 'include',
-        body: JSON.stringify(payload)
-      });
-      if (res.status === 401) { window.location.href = 'index.html'; return; }
-      if (!res.ok) throw new Error(`PUT ${url} → ${res.status}`);
-      return res.json();
-    }
-
-    // =========================
-    //  CARGA INICIAL
-    // =========================
-  // =========================
-//  API HELPERS (MockAPI)
-// =========================
-async function apiGetStudents() {
-  const res = await fetch(ROUTES.list());
-  if (!res.ok) throw new Error(`GET error → ${res.status}`);
-  return res.json();
-}
-
-async function apiSaveStudents() {
-  for (const r of state.rows) {
-    // Si tiene un id interno de MockAPI, hacemos PUT (actualizar)
-    if (r.mockId) {
-      await fetch(`${ROUTES.save()}/${r.mockId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(r)
-      });
-    } else {
-      // Si es nuevo, hacemos POST
-      const res = await fetch(ROUTES.save(), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(r)
-      });
-      const data = await res.json();
-      r.mockId = data.id; // Guardamos id generado por MockAPI
-    }
-  }
-}
-    // =========================
-    //  UI / RENDER
-    // =========================
-    function renderRows() {
-      tbody.innerHTML = '';
-      state.rows.forEach((r, idx) => {
-        const tr = document.createElement('tr');
-        const materiasOptions = MATERIAS.map(m => `<option value="${m}" ${r.asignatura === m ? 'selected' : ''}>${m}</option>`).join('');
-        const periodosOptions = PERIODOS.map(p => `<option value="${p}" ${r.periodo == p ? 'selected' : ''}>${p}</option>`).join('');
-
-        const idCell = `
-          <div class="input-group input-group-sm">
-            <input class="form-control" value="${r.idEst || ''}" data-k="idEst" ${state.autoId ? 'readonly' : ''}>
-          </div>`;
-
-        tr.innerHTML = `
-          <td>${idCell}</td>
-          <td><input class="form-control form-control-sm" value="${r.documento || ''}" data-k="documento" placeholder="Ej: 1234567890"></td>
-          <td><input class="form-control form-control-sm" value="${r.nombre || ''}" data-k="nombre" placeholder="Nombre completo"></td>
-          <td>
-            <select class="form-select form-select-sm" data-k="asignatura">
-              <option value="">-- Seleccione --</option>
-              ${materiasOptions}
-            </select>
-          </td>
-          <td><input class="form-control form-control-sm" type="number" value="${r.anio || 2025}" data-k="anio" min="2000" max="2100"></td>
-          <td>
-            <select class="form-select form-select-sm" data-k="periodo">
-              <option value="">--</option>
-              ${periodosOptions}
-            </select>
-          </td>
-          <td><button type="button" class="btn btn-sm btn-outline-danger" data-del="${idx}">Eliminar</button></td>`;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function nextId() {
-      const id = state.nextId;
-      state.nextId += 1;
-      return String(id);
-    }
-
-    function ensureRowId(r) {
-      if (!r.idEst && state.autoId) r.idEst = nextId();
-    }
-
-    function addRow(prefill = {}) {
-      const row = {
-        idEst: prefill.idEst || '',
-        documento: prefill.documento || '',
-        nombre: prefill.nombre || '',
-        asignatura: prefill.asignatura || '',
-        anio: prefill.anio || 2025,
-        periodo: prefill.periodo || ''
-      };
-      ensureRowId(row);
-      state.rows.push(row);
-      renderRows();
-    }
-
-    // =========================
-    //  GUARDAR
-    // =========================
-    async function saveState() {
-      state.autoId = !!autoIdSwitch.checked;
-
-      // Guarda en local inmediatamente
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (e) {
-        console.error('Error guardando en localStorage:', e);
-      }
-
-      if (!API_BASE) {
-        showNetStatus('Datos guardados correctamente en el navegador.', 'success');
-        return;
-      }
-
-      // Sincroniza con servidor si existe API
-      try {
-        await apiSaveStudents();
-        showNetStatus('Guardado en el servidor correctamente.', 'success');
-      } catch (err) {
-        showNetStatus('No se pudo guardar en el servidor. Los cambios quedan en este navegador.', 'warning');
-      }
-    }
-
-    // =========================
-    //  EXPORT CSV
-    // =========================
-    async function exportCSV() {
-      const headers = ['ID Estudiante', 'Documento', 'Nombre Completo', 'Asignatura', 'Año Lectivo', 'Período'];
-      const rows = state.rows.map(r => [r.idEst, r.documento, r.nombre, r.asignatura, r.anio, r.periodo || '']);
-      const csv = [headers.join(','), ...rows.map(cols => cols.map(v => typeof v === 'string' && v.includes(',') ? `"${v.replaceAll('"', '""')}"` : v).join(','))].join('\n');
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `evalix_estudiantes_${new Date().toISOString().split('T')[0]}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      URL.revokeObjectURL(url);
-      a.remove();
-    }
-
-    // =========================
-    //  EVENTOS
-    // =========================
-    document.getElementById('addRowBtn').addEventListener('click', () => addRow());
-    document.getElementById('saveBtn').addEventListener('click', () => { saveState(); });
-    document.getElementById('clearBtn').addEventListener('click', () => {
-      if (confirm('Esto eliminará TODOS los estudiantes registrados. ¿Continuar?')) {
-        state.rows = [];
-        localStorage.removeItem(STORAGE_KEY);
-        renderRows();
-        showNetStatus('Todos los datos han sido eliminados.', 'info');
-      }
-    });
-    document.getElementById('exportBtn').addEventListener('click', exportCSV);
-
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('evalix_user');
-      window.location.replace('index.html');
-    });
-
-    // Delegación de eventos para eliminar filas
-    tbody.addEventListener('click', (e) => {
-      const btn = e.target.closest('button[data-del]');
-      if (!btn) return;
-      const index = parseInt(btn.getAttribute('data-del'), 10);
-      if (Number.isInteger(index)) {
-        if (confirm('¿Eliminar este estudiante?')) {
-          state.rows.splice(index, 1);
-          renderRows();
-        }
-      }
-    });
-
-    // Edición de celdas
-    tbody.addEventListener('input', (e) => {
-      const input = e.target.closest('[data-k]');
-      if (!input) return;
-      const tr = e.target.closest('tr');
-      const idx = [...tbody.children].indexOf(tr);
-      const key = input.getAttribute('data-k');
-      let val = input.value;
-
-      // Validaciones específicas
-      if (key === 'anio') {
-        val = parseInt(val, 10);
-        if (isNaN(val) || val < 2000 || val > 2100) val = 2025;
-      }
-      if (key === 'periodo') {
-        val = parseInt(val, 10);
-        if (![1, 2, 3, 4].includes(val)) val = '';
-      }
-
-      state.rows[idx][key] = val;
-    });
-
-    // =========================
-    //  UI Helpers
-    // =========================
-    function showNetStatus(msg, type = 'info') {
-      netStatus.classList.remove('d-none', 'alert-info', 'alert-success', 'alert-warning', 'alert-danger');
-      netStatus.classList.add(`alert-${type}`);
-      netStatus.textContent = msg;
-      setTimeout(() => {
-        netStatus.classList.add('d-none');
-      }, 5000);
-    }
-  </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-
-</body>
-
-</html>
