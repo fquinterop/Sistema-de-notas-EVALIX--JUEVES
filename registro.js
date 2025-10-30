@@ -98,7 +98,7 @@ btnRegistrar.onclick = async function(event) { // ⚠️ Agregué 'async' aquí
     document.querySelector('#passwordInput input').value = '';
     document.querySelector('#ConfpasswordInput input').value = '';
 
-    // Redirigir después del registro
+    // Redirigir después del registro.
     setTimeout(() => {
       window.location.href = 'Login.html';
     }, 3000);
